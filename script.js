@@ -132,47 +132,29 @@
     if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) modal.close();
   });
 
-  /* ---------- contact form ---------- */
-  var form = document.getElementById('contact-form');
-  var status = document.getElementById('form-status');
-  var ts = document.getElementById('f-ts');
-  ts.value = String(Date.now());
-
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    status.className = 'form-status';
-    status.textContent = '';
-
-    var el = form.elements;
-    var name = el['name'].value.trim();
-    var email = el['email'].value.trim();
-    var message = el['message'].value.trim();
-    var bad = false;
-    [[el['name'], name.length > 0], [el['email'], /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)], [el['message'], message.length > 4]]
-      .forEach(function (pair) { pair[0].classList.toggle('invalid', !pair[1]); if (!pair[1]) bad = true; });
-    if (bad) { status.classList.add('err'); status.textContent = 'Please fill in your name, a valid email, and a message.'; return; }
-
-    var btn = form.querySelector('button[type=submit]');
-    var label = btn.querySelector('span');
-    btn.disabled = true; label.textContent = 'Sending...';
-
-    fetch(form.getAttribute('action'), { method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' } })
-      .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
-      .then(function (res) {
-        if (res && res.ok) {
-          status.classList.add('ok');
-          status.textContent = "Thanks! Your message was sent — I'll get back to you soon.";
-          form.reset(); ts.value = String(Date.now());
-        } else { throw new Error((res && res.error) || 'send failed'); }
-      })
-      .catch(function () {
-        // Fallback: open the visitor's email app with the message pre-filled
-        status.classList.add('err');
-        status.innerHTML = 'Couldn’t send right now. <a href="mailto:contact@mazenfraihat.com?subject=' +
-          encodeURIComponent('Portfolio message from ' + name) + '&body=' + encodeURIComponent(message + '\n\n— ' + name + ' (' + email + ')') +
-          '" style="text-decoration:underline">Email me directly instead</a>.';
-      })
-      .finally(function () { btn.disabled = false; label.textContent = 'Send Message'; });
+  /* ---------- copy email ---------- */
+  var copyBtn = document.getElementById('copy-email');
+  copyBtn.addEventListener('click', function () {
+    var label = copyBtn.querySelector('span');
+    var email = copyBtn.getAttribute('data-email');
+    var done = function () {
+      label.textContent = 'Copied!';
+      setTimeout(function () { label.textContent = 'Copy email'; }, 2000);
+    };
+    var legacy = function () {
+      var t = document.createElement('textarea');
+      t.value = email; t.style.position = 'fixed'; t.style.opacity = '0';
+      document.body.appendChild(t); t.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (err) {}
+      document.body.removeChild(t);
+      if (ok) done();
+    };
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(email).then(done, legacy);
+    } else {
+      legacy();
+    }
   });
 
   /* ---------- footer year ---------- */

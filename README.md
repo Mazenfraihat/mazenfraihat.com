@@ -1,12 +1,11 @@
 # mazenfraihat.com
 
-Personal portfolio of Mazen Fraihat. Plain HTML/CSS/JS (no framework, no build step) + a PHP contact form, built for Hostinger.
+Personal portfolio of Mazen Fraihat. Plain HTML/CSS/JS (no framework, no build step), built for Hostinger.
 
 ```
 index.html        ← all content (edit text here)
 styles.css        ← design (colors at the top in :root)
 script.js         ← theme toggle, filters, modals, animations, form
-contact.php       ← sends contact-form emails via Hostinger
 .htaccess         ← HTTPS redirect, caching, compression, security headers
 404.html, favicon.svg, robots.txt, sitemap.xml
 assets/img/       ← images
@@ -25,7 +24,6 @@ bash get-assets.sh
 ```bash
 python3 -m http.server 8000     # then open http://localhost:8000
 ```
-(The contact form needs PHP, so it only fully works once live on Hostinger.)
 
 ## 3. Push to GitHub
 
@@ -45,8 +43,7 @@ git push -u origin main
 2. hPanel → **Advanced → Git** → Repository: `https://github.com/Mazenfraihat/mazenfraihat.com.git`, Branch: `main`, Directory: *(leave empty → deploys to `public_html`)*. Click **Create**.
    - Private repo? Copy the SSH key Hostinger shows and add it in GitHub → repo → Settings → Deploy keys.
 3. Click **Deploy**. Then enable **Auto Deployment** and add the webhook URL Hostinger gives you in GitHub → repo → Settings → Webhooks. Every `git push` now updates the live site.
-4. hPanel → **Emails** → create `contact@mazenfraihat.com` (inbox) and `noreply@mazenfraihat.com` (sender for the form).
-5. hPanel → **Security → SSL** → install the free SSL.
+4. hPanel → **Security → SSL** → install the free SSL.
 
 ## 5. Point the domain away from Replit
 
